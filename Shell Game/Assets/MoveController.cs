@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -110,7 +110,7 @@ public class MoveController : MonoBehaviour
 
             float curX = GameObject.FindGameObjectWithTag("CupMain").transform.position.x;
             GameObject.FindGameObjectWithTag("CupMain").transform.position = new Vector2(curX, showAnswerY);
-        
+
             // Delay to start move after show the ball
             if(frames >= maxFrames - (int)(maxFrames/3) ){
                 GameObject.FindGameObjectWithTag("CupMain").transform.position = new Vector2(curX, initialY);
@@ -124,7 +124,8 @@ public class MoveController : MonoBehaviour
                     curMove = 0;
                     state = "NORMAL";
                     choose = WAITING_ANSWER;     
-                    GameObject.Find("Canvas").GetComponent<Score>().score++;            
+                    GameObject.Find("Canvas").GetComponent<Score>().score++;  
+                    changeZ();          
                 } else if(choose == WRONG_ANSWER)
                 {
                     level = initialLevel;
@@ -132,6 +133,7 @@ public class MoveController : MonoBehaviour
                     state = "NORMAL";
                     choose = WAITING_ANSWER;
                     GameObject.Find("Canvas").GetComponent<Score>().score = 0;
+                    changeZ(); 
                 }
 
                 frames = 0;
@@ -139,6 +141,15 @@ public class MoveController : MonoBehaviour
 
         }
 
+    }
+
+    // Used to fix bug that cup with ball is allways on the front
+    void changeZ(){
+        float tempx = GameObject.FindGameObjectWithTag("CupMain").transform.position.x;
+        float tempy = GameObject.FindGameObjectWithTag("CupMain").transform.position.y;
+        float tempz = (float) Random.Range(0,3);
+        
+        GameObject.FindGameObjectWithTag("CupMain").transform.position = new Vector3(tempx, tempy, tempz);
     }
 
     // Setting velocity to null
@@ -159,7 +170,8 @@ public class MoveController : MonoBehaviour
 
         rb = cup1.GetComponent<Rigidbody2D>();
         rb2 = cup2.GetComponent<Rigidbody2D>(); 
-         
+        
+        changeZ();
         resetVelocity();
     }
 
@@ -181,8 +193,8 @@ public class MoveController : MonoBehaviour
         // Fix floating point's bug
         if(distanceToGoal < 0.2)
         {
-            cup1.transform.position = new Vector2 (initialx2, transform.position.y);
-            cup2.transform.position = new Vector2 (initialx1, transform.position.y);
+            cup1.transform.position = new Vector3 (initialx2, transform.position.y, transform.position.z);
+            cup2.transform.position = new Vector3 (initialx1, transform.position.y, transform.position.z);
        
             isChanging = false;
            
@@ -219,7 +231,6 @@ public class MoveController : MonoBehaviour
     void ChangePositionBall()
     {
         float xcupMain = GameObject.FindGameObjectWithTag("CupMain").transform.position.x;
-        ball.transform.position = new Vector2(xcupMain, ball.transform.position.y);
+        ball.transform.position = new Vector3(xcupMain, ball.transform.position.y,10);
     }
-
 }
