@@ -10,11 +10,13 @@
 * Getting objects by name and by tag
 * Tag logic
 * Sorter layer logic
-* Mobile portable
+
+
 
 <p align="center">
   <img width="100%" height="100%" src="https://github.com/diegolrs/Shell-Game/blob/master/ShellGame.gif">
-  Project Demonstration
+  Project Demonstration<br>
+  (This project is portable for mobile)
 </p>
 
 <p align="center">
