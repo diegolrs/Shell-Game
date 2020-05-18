@@ -20,7 +20,7 @@ public class MoveController : MonoBehaviour
     private Vector3 nullVelocity, initialVelocity;
 
     private bool isChanging = false; // See if the move its still being doing
-    private int initialLevel = 5, level = 5, curMove = 0; // Set initial speed and quant of moves
+    private int initialLevel, level, curMove = 0; // Set initial speed and quant of moves
     private int numberOfCups; // Set number of cups on game
     public string state; // state of the game
     private int frames = 0, maxFrames = 60*3; // set delay
@@ -36,7 +36,9 @@ public class MoveController : MonoBehaviour
         initialY = GameObject.FindGameObjectWithTag("CupMain").transform.position.y;
         showAnswerY = initialY + 2;
 
-        initialSpeed = 5f;
+        initialLevel = 5;
+        level = initialLevel;
+        initialSpeed = (float) initialLevel;
         speed = initialSpeed + level;
         initialVelocity = new Vector3(speed,0,0);
         nullVelocity = new Vector3(0,0,0);
@@ -60,14 +62,20 @@ public class MoveController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        speed = initialSpeed + level;
+        initialVelocity = new Vector3(speed,0,0);
+        Debug.Log(speed);
+
         if(state == "INITIAL") {
             frames++;
             float curX = GameObject.FindGameObjectWithTag("CupMain").transform.position.x;
             GameObject.FindGameObjectWithTag("CupMain").transform.position = new Vector2(curX, showAnswerY);
+            setBally(0);
 
             // Delay to start move after show the ball
             if(frames >= maxFrames - (int)(maxFrames/3) ){
                 GameObject.FindGameObjectWithTag("CupMain").transform.position = new Vector2(curX, initialY);
+                setBally(20);
             }
 
             if(frames >= maxFrames){
@@ -76,8 +84,8 @@ public class MoveController : MonoBehaviour
             }
         }
 
+
         if(state == "NORMAL"){
-            speed = initialSpeed + level;
 
             if(isChanging)
                 ExchangePosition(cur1, cur2);
@@ -110,10 +118,12 @@ public class MoveController : MonoBehaviour
 
             float curX = GameObject.FindGameObjectWithTag("CupMain").transform.position.x;
             GameObject.FindGameObjectWithTag("CupMain").transform.position = new Vector2(curX, showAnswerY);
+            setBally(0);
 
             // Delay to start move after show the ball
             if(frames >= maxFrames - (int)(maxFrames/3) ){
                 GameObject.FindGameObjectWithTag("CupMain").transform.position = new Vector2(curX, initialY);
+                setBally(20);
             }
 
             if(frames >= maxFrames)
@@ -176,7 +186,8 @@ public class MoveController : MonoBehaviour
     }
 
     void ExchangePosition(string name1, string name2) 
-    {       
+    {    
+
         if(config) {
            Config(name1, name2);
            config = false;
@@ -228,6 +239,14 @@ public class MoveController : MonoBehaviour
         ChangePositionBall();
     }
 
+    void setBally(float newY){
+        float tempx = ball.transform.position.x;
+        float tempz = ball.transform.position.z;
+
+        ball.transform.position = new Vector3(tempx, newY,tempz);
+    }
+
+    // Change y from ball to bug fix in high speed
     void ChangePositionBall()
     {
         float xcupMain = GameObject.FindGameObjectWithTag("CupMain").transform.position.x;
